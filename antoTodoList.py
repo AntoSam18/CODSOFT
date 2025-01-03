@@ -2,7 +2,7 @@ import sqlite3
 from datetime import datetime
 from plyer import notification
 
-# Database setup
+
 conn = sqlite3.connect('todo_list.db')
 cursor = conn.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS tasks (
@@ -15,20 +15,20 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS tasks (
 )''')
 conn.commit()
 
-# Add a new task
+
 def add_task(title, category, due_time, priority):
     cursor.execute('INSERT INTO tasks (title, category, due_time, priority, completed) VALUES (?, ?, ?, ?, ?)',
                    (title, category, due_time, priority, False))
     conn.commit()
     print(f"Task '{title}' added successfully!")
 
-# Mark a task as completed
+
 def mark_task_completed(task_id):
     cursor.execute('UPDATE tasks SET completed = 1 WHERE id = ?', (task_id,))
     conn.commit()
     print(f"Task ID {task_id} marked as completed!")
 
-# Display tasks
+
 def display_tasks():
     cursor.execute('SELECT * FROM tasks ORDER BY category, due_time')
     tasks = cursor.fetchall()
@@ -40,7 +40,7 @@ def display_tasks():
     else:
         print("\nNo tasks available.")
 
-# Show key metrics
+
 def show_metrics():
     cursor.execute('SELECT COUNT(*) FROM tasks WHERE completed = 0')
     pending = cursor.fetchone()[0]
@@ -48,7 +48,7 @@ def show_metrics():
     overdue = cursor.fetchone()[0]
     print(f"\nMetrics: Pending Tasks: {pending}, Overdue Tasks: {overdue}")
 
-# Send notifications for overdue tasks
+
 def send_notifications():
     cursor.execute('SELECT title FROM tasks WHERE due_time < datetime("now") AND completed = 0')
     overdue_tasks = cursor.fetchall()
@@ -59,7 +59,7 @@ def send_notifications():
             timeout=5
         )
 
-# Main menu
+
 def main_menu():
     while True:
         print("\nTo-Do List Application")
@@ -101,6 +101,6 @@ def main_menu():
         else:
             print("Invalid choice. Please try again.")
 
-# Run the application
+
 if __name__ == "__main__":
     main_menu()
